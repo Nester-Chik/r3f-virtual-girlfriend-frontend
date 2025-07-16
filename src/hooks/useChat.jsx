@@ -1,8 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000";
-
-console.log(backendUrl);
+const backendUrl = "https://avatar-backend-production.up.railway.app";
 
 const ChatContext = createContext();
 
