@@ -108,7 +108,7 @@ let setupMode = false;
 
 export function Avatar(props) {
   const { nodes, materials, scene } = useGLTF(
-    "/models/675012d3101f776747b30756.glb"
+    "/models/687b2c788010b70ef5fcd683.glb"
   );
   
   const { message, onMessagePlayed, chat } = useChat();
@@ -137,7 +137,7 @@ export function Avatar(props) {
   const laughingAnimation = useFBX("/animations/Laughing.fbx");
   const rumbaDancingAnimation = useFBX("/animations/Rumba Dancing.fbx");
   const standingIdleAnimation = useFBX("/animations/Standing Idle.fbx");
-  const talkingAnimation = useFBX("/animations/Talking.fbx");
+  const talkingAnimation = useFBX("/animations/TalkingNew.fbx");
   const terrifiedAnimation = useFBX("/animations/Terrified.fbx");
 
   // Rename animations (necessary for grouping and identification)
@@ -422,11 +422,11 @@ export function Avatar(props) {
   );
 }
 
-useGLTF.preload("/models/675012d3101f776747b30756.glb");
+useGLTF.preload("/models/687b2c788010b70ef5fcd683.glb");
 useFBX.preload("/animations/Angry.fbx");
 useFBX.preload("/animations/Crying.fbx");
 useFBX.preload("/animations/Laughing.fbx");
 useFBX.preload("/animations/Rumba Dancing.fbx");
 useFBX.preload("/animations/Standing Idle.fbx");
-useFBX.preload("/animations/Talking.fbx");
+useFBX.preload("/animations/TalkingNew.fbx");
 useFBX.preload("/animations/Terrified.fbx");

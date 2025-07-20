@@ -1,12 +1,12 @@
 import {
   CameraControls,
   ContactShadows,
-  Environment,
   Text,
 } from "@react-three/drei";
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useChat } from "../hooks/useChat";
 import { Avatar } from "./Avatar";
+import { Background } from "./Background";
 
 const Dots = (props) => {
   const { loading } = useChat();
@@ -55,7 +55,23 @@ export const Experience = () => {
   return (
     <>
       <CameraControls ref={cameraControls} />
-      <Environment preset="sunset" />
+      <Background />
+      
+      {/* Lighting for the avatar */}
+      <ambientLight intensity={0.6} />
+      <directionalLight 
+        position={[5, 5, 5]} 
+        intensity={0.8} 
+        castShadow 
+        shadow-mapSize-width={2048}
+        shadow-mapSize-height={2048}
+      />
+      <directionalLight 
+        position={[-5, 5, -5]} 
+        intensity={0.4} 
+        color="#ffffff"
+      />
+      
       {/* Wrapping Dots into Suspense to prevent Blink when Troika/Font is loaded */}
       <Suspense>
         <Dots position-y={1.8} position-x={-0.02} />
