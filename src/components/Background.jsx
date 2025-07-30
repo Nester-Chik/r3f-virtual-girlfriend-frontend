@@ -4,7 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 
 export function Background() {
-  const texture = useTexture("/storefriendly-background.jpg");
+  const texture = useTexture("/storefriendly-design-background.jpg");
   const meshRef = useRef();
   const [dimensions, setDimensions] = useState({ width: 2, height: 2 });
 
@@ -51,9 +51,21 @@ export function Background() {
       const imageAspectRatio = texture.image.width / texture.image.height;
       const viewportAspectRatio = viewportWidth / viewportHeight;
       
-      // Scale to fit height and maintain aspect ratio (width can be cropped)
-      const scaleY = viewportHeight / dimensions.height;
-      const scaleX = scaleY; // Keep aspect ratio by using same scale for both dimensions
+      // Scale to fill both dimensions while maintaining aspect ratio
+      // The image will be scaled up until it covers both width and height
+      // Any overflow will be cropped, keeping the image centered
+      let scale;
+      
+      if (imageAspectRatio > viewportAspectRatio) {
+        // Image is wider than viewport - scale to fit height, width will be cropped
+        scale = viewportHeight / dimensions.height;
+      } else {
+        // Image is taller than viewport - scale to fit width, height will be cropped
+        scale = viewportWidth / dimensions.width;
+      }
+      
+      const scaleX = scale;
+      const scaleY = scale;
       
       meshRef.current.scale.set(scaleX, scaleY, 1);
     }
