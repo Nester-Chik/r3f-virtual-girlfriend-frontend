@@ -20,11 +20,17 @@ export const ChatProvider = ({ children }) => {
         body: JSON.stringify({ message: userMessage }),
       });
       const responseData = await data.json();
+      console.log("Backend response:", responseData);
       
       const resp = responseData.messages || [responseData];
+      console.log("Extracted messages:", resp);
       
       // Add avatar response to conversation history
-      setMessages((prevMessages) => [...prevMessages, ...resp]);
+      setMessages((prevMessages) => {
+        const newMessages = [...prevMessages, ...resp];
+        console.log("Updated messages array:", newMessages);
+        return newMessages;
+      });
     } catch (error) {
       console.error("Error sending message:", error);
       // Add error message to conversation
@@ -39,30 +45,6 @@ export const ChatProvider = ({ children }) => {
   const [message, setMessage] = useState();
   const [loading, setLoading] = useState(false);
   const [cameraZoomed, setCameraZoomed] = useState(true);
-  const [processedMessageIds, setProcessedMessageIds] = useState(new Set());
-  
-  // Initialize with a fixed greeting message
-  useEffect(() => {
-    async function fetchGreeting() {
-      try {
-        const data = await fetch(`${backendUrl}/greeting`, {
-          method: "GET"
-        });
-        const responseData = await data.json();
-        
-        const resp = responseData.messages || [responseData];
-        
-        // Add avatar response to conversation history
-        setMessages(() => [...resp]);
-      } catch (error) {
-        console.error("Error sending message:", error);
-        // Add error message to conversation
-        const errorMsg = { role: "assistant", content: "Sorry, I encountered an error. Please try again." };
-        setMessages(() => [errorMsg]);
-      }
-    }
-    fetchGreeting();
-  }, []);
   
   // Keep track of the current message being processed by the avatar
   const onMessagePlayed = () => {
@@ -71,25 +53,35 @@ export const ChatProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    console.log("useChat useEffect - messages:", messages);
+    
     // Only process new messages if there's no current message being played
     if (message) {
+      console.log("useChat useEffect - message already being processed, skipping");
       return;
     }
     
     // Find the next avatar message that hasn't been processed for TTS
-    const nextAvatarMessage = messages.find((msg, index) => 
-      !processedMessageIds.has(index) && msg.role !== "user"
+    const nextAvatarMessage = messages.find(msg => 
+      !msg.ttsProcessed && msg.role !== "user"
     );
     
+    console.log("useChat useEffect - nextAvatarMessage:", nextAvatarMessage);
+    
     if (nextAvatarMessage) {
-      const messageIndex = messages.findIndex(msg => msg === nextAvatarMessage);
+      console.log("useChat useEffect - setting message for TTS:", nextAvatarMessage);
       setMessage(nextAvatarMessage);
       // Mark this message as processed for TTS
-      setProcessedMessageIds(prev => new Set([...prev, messageIndex]));
+      setMessages(prevMessages => 
+        prevMessages.map(msg => 
+          msg === nextAvatarMessage ? { ...msg, ttsProcessed: true } : msg
+        )
+      );
     } else {
+      console.log("useChat useEffect - no message to process, setting to null");
       setMessage(null);
     }
-  }, [messages, message, processedMessageIds]);
+  }, [messages, message]);
 
   return (
     <ChatContext.Provider
